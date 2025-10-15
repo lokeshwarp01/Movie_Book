@@ -99,7 +99,7 @@ const BookingHistory = () => {
     }
 
     try {
-      await api.patch(`/bookings/${bookingId}/cancel`);
+      await api.put(`/bookings/${bookingId}/cancel`);
       toast.success('Booking cancelled successfully');
       fetchBookings(); // Refresh the list
     } catch (error) {

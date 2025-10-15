@@ -5,12 +5,12 @@ import { toast } from 'react-hot-toast';
 
 const MovieManagement = () => {
   const [movies, setMovies] = useState([]);
-  const [pagination, setPagination] = useState({ 
-    currentPage: 1, 
-    totalPages: 1, 
-    totalMovies: 0, 
-    hasNext: false, 
-    hasPrev: false 
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    totalPages: 1,
+    totalMovies: 0,
+    hasNext: false,
+    hasPrev: false
   });
   const [searchTerm, setSearchTerm] = useState('');
   const [busyId, setBusyId] = useState(null);
@@ -19,7 +19,7 @@ const MovieManagement = () => {
   const [movieForm, setMovieForm] = useState({
     title: '',
     genre: '',
-    language: '',
+    movieLanguage: '',
     duration: '',
     description: '',
     director: '',
@@ -45,7 +45,7 @@ const MovieManagement = () => {
         limit: '10',
         ...(searchTerm && { search: searchTerm })
       });
-      
+
       const response = await api.get(`/movies?${params}`);
       setMovies(response.data.data.movies || []);
       setPagination(response.data.data.pagination || {});
@@ -65,7 +65,7 @@ const MovieManagement = () => {
     setBusyId(movieId);
     try {
       let endpoint = `/movies/${movieId}`;
-      
+
       switch (action) {
         case 'delete':
           await api.delete(endpoint);
@@ -94,7 +94,7 @@ const MovieManagement = () => {
       const payload = {
         title: movieForm.title,
         genre: movieForm.genre.split(',').map(s => s.trim()).filter(Boolean),
-        language: movieForm.language,
+        movieLanguage: movieForm.movieLanguage,
         duration: Number(movieForm.duration),
         description: movieForm.description,
         director: movieForm.director,
@@ -105,6 +105,7 @@ const MovieManagement = () => {
         rating: movieForm.rating,
         imdbRating: movieForm.imdbRating ? Number(movieForm.imdbRating) : undefined
       };
+      console.log('Movie payload:', payload); // Debug payload
 
       if (editingMovie) {
         await api.put(`/movies/${editingMovie._id}`, payload);
@@ -113,7 +114,7 @@ const MovieManagement = () => {
         await api.post('/movies', payload);
         toast.success('Movie created successfully');
       }
-      
+
       setShowModal(false);
       resetForm();
       fetchMovies(pagination.currentPage);
@@ -130,7 +131,7 @@ const MovieManagement = () => {
     setMovieForm({
       title: movie.title || '',
       genre: Array.isArray(movie.genre) ? movie.genre.join(', ') : movie.genre || '',
-      language: movie.language || '',
+      movieLanguage: movie.movieLanguage || movie.language || '',
       duration: movie.duration?.toString() || '',
       description: movie.description || '',
       director: movie.director || '',
@@ -148,7 +149,7 @@ const MovieManagement = () => {
     setMovieForm({
       title: '',
       genre: '',
-      language: '',
+      movieLanguage: '',
       duration: '',
       description: '',
       director: '',
@@ -335,8 +336,8 @@ const MovieManagement = () => {
                   <input
                     type="text"
                     placeholder="Language"
-                    value={movieForm.language}
-                    onChange={(e) => setMovieForm({ ...movieForm, language: e.target.value })}
+                    value={movieForm.movieLanguage}
+                    onChange={(e) => setMovieForm({ ...movieForm, movieLanguage: e.target.value })}
                     className="border rounded px-3 py-2"
                     required
                   />
@@ -378,7 +379,6 @@ const MovieManagement = () => {
                     <option value="U">U</option>
                     <option value="U/A">U/A</option>
                     <option value="A">A</option>
-                    <option value="S">S</option>
                   </select>
                   <input
                     type="url"

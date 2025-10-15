@@ -10,7 +10,7 @@ const movieSchema = new mongoose.Schema({
     type: String,
     enum: ['Action', 'Adventure', 'Comedy', 'Drama', 'Horror', 'Romance', 'Sci-Fi', 'Thriller', 'Animation', 'Documentary']
   }],
-  language: {
+  movieLanguage: {
     type: String,
     required: true
   },
@@ -67,13 +67,13 @@ const movieSchema = new mongoose.Schema({
 });
 
 // Update the updatedAt field before saving
-movieSchema.pre('save', function(next) {
+movieSchema.pre('save', function (next) {
   this.updatedAt = Date.now();
   next();
 });
 
 // Virtual for checking if movie is currently running
-movieSchema.virtual('isCurrentlyRunning').get(function() {
+movieSchema.virtual('isCurrentlyRunning').get(function () {
   const now = new Date();
   const threeMonthsAgo = new Date();
   threeMonthsAgo.setMonth(now.getMonth() - 3);

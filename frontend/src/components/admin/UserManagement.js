@@ -82,13 +82,13 @@ const UserManagement = () => {
       let endpoint = '';
       switch (action) {
         case 'activate':
-          endpoint = `/users/admin/users/${userId}/activate`;
+          endpoint = `/admin/users/${userId}/activate`;
           break;
         case 'deactivate':
-          endpoint = `/users/admin/users/${userId}/deactivate`;
+          endpoint = `/admin/users/${userId}/deactivate`;
           break;
         case 'delete':
-          endpoint = `/users/admin/users/${userId}`;
+          endpoint = `/admin/users/${userId}`;
           break;
         default:
           throw new Error('Invalid action');
@@ -113,7 +113,7 @@ const UserManagement = () => {
   const handleRoleChange = async (userId, newRole) => {
     setBusyId(userId);
     try {
-      await api.put(`/users/admin/users/${userId}/role`, { role: newRole });
+      await api.put(`/admin/users/${userId}/role`, { role: newRole });
       toast.success('User role updated successfully');
       fetchUsers(pagination.currentPage);
     } catch (error) {
@@ -129,10 +129,10 @@ const UserManagement = () => {
     setBusyId('saving');
     try {
       if (editingUser) {
-        await api.put(`/users/admin/users/${editingUser._id}`, userForm);
+        await api.put(`/admin/users/${editingUser._id}`, userForm);
         toast.success('User updated successfully');
       } else {
-        await api.post('/users/admin/users', userForm);
+        await api.post('/admin/users', userForm);
         toast.success('User created successfully');
       }
       

@@ -69,13 +69,13 @@ const TheaterManagement = () => {
       let endpoint = '';
       switch (action) {
         case 'approve':
-          endpoint = `/theaters/admin/${theaterId}/approve`;
+          endpoint = `/admin/theaters/${theaterId}/approve`;
           break;
         case 'reject':
-          endpoint = `/theaters/admin/${theaterId}/reject`;
+          endpoint = `/admin/theaters/${theaterId}/reject`;
           break;
         case 'delete':
-          endpoint = `/theaters/admin/${theaterId}`;
+          endpoint = `/admin/theaters/${theaterId}`;
           break;
         default:
           throw new Error('Invalid action');
@@ -102,10 +102,10 @@ const TheaterManagement = () => {
     setBusyId('saving');
     try {
       if (editingTheater) {
-        await api.put(`/theaters/admin/${editingTheater._id}`, theaterForm);
+        await api.put(`/admin/theaters/${editingTheater._id}`, theaterForm);
         toast.success('Theater updated successfully');
       } else {
-        await api.post('/theaters/admin', theaterForm);
+        await api.post('/admin/theaters', theaterForm);
         toast.success('Theater created successfully');
       }
       

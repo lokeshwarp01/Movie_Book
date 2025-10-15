@@ -12,7 +12,7 @@ const movieSchema = Joi.object({
   genre: Joi.array().items(Joi.string().valid(
     'Action', 'Adventure', 'Comedy', 'Drama', 'Horror', 'Romance', 'Sci-Fi', 'Thriller', 'Animation', 'Documentary'
   )).min(1).required(),
-  language: Joi.string().required(),
+  movieLanguage: Joi.string().required(),
   duration: Joi.number().min(60).max(300).required(),
   description: Joi.string().required(),
   director: Joi.string().required(),
@@ -163,12 +163,12 @@ router.get('/:id', optionalAuth, async (req, res) => {
 });
 
 // POST /api/movies (super_admin only)
-router.post('/', authenticate, authorize('super_admin'), async (req, res) => {
+router.post('/', authenticate, authorize(['super_admin', 'theater_admin']), async (req, res) => {
   try {
     const { error, value } = movieSchema.validate(req.body);
     if (error) return res.status(400).json({ success: false, message: error.details[0].message });
 
-    const duplicate = await Movie.findOne({ title: value.title, releaseDate: value.releaseDate, language: value.language });
+    const duplicate = await Movie.findOne({ title: value.title, releaseDate: value.releaseDate, movieLanguage: value.movieLanguage });
     if (duplicate) return res.status(409).json({ success: false, message: 'Movie already exists with same title, date, language' });
 
     const movie = await Movie.create(value);
@@ -180,7 +180,7 @@ router.post('/', authenticate, authorize('super_admin'), async (req, res) => {
 });
 
 // PUT /api/movies/:id (super_admin)
-router.put('/:id', authenticate, authorize('super_admin'), async (req, res) => {
+router.put('/:id', authenticate, authorize(['super_admin', 'theater_admin']), async (req, res) => {
   try {
     const { error, value } = movieSchema.validate(req.body);
     if (error) return res.status(400).json({ success: false, message: error.details[0].message });
@@ -196,7 +196,7 @@ router.put('/:id', authenticate, authorize('super_admin'), async (req, res) => {
 });
 
 // DELETE /api/movies/:id (super_admin)
-router.delete('/:id', authenticate, authorize('super_admin'), async (req, res) => {
+router.delete('/:id', authenticate, authorize(['super_admin', 'theater_admin']), async (req, res) => {
   try {
     const hasUpcoming = await Show.exists({ movieId: req.params.id, startTime: { $gte: new Date() }, isActive: true });
     if (hasUpcoming) return res.status(400).json({ success: false, message: 'Cannot delete movie with upcoming shows' });
